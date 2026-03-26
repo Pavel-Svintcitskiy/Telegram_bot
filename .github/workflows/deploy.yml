@@ -4,28 +4,36 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:  # ручной запуск
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    environment:
+      name: production  # environment для деплоя
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'  # кэширование зависимостей
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
 
       - name: Deploy to Railway
         env:
           RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }}
         run: |
-          curl -sL https://railway.app/install.sh | sh
-          railway login --apiKey $RAILWAY_API_KEY
-          railway up --project 6e255b46-a664-4509-9785-2bfe2c24d07b
+          railway link 6e255b46-a664-4509-9785-2bfe2c24d07b
+          railway up --detach --ci
