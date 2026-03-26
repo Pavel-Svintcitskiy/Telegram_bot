@@ -1,16 +1,27 @@
 import requests
 import pandas as pd
 
+
 def get_data(symbol='BTCUSDT'):
-    url = f"https://api.exchange.coinbase.com/products/{symbol}/candles?granularity=3600"
-    headers = {"User-Agent": "Python/AiogramBot"}
+    coinbase_symbol = symbol.replace("USDT", "-USD")
+
+    url = f"https://api.exchange.coinbase.com/products/{coinbase_symbol}/candles?granularity=3600"
+
+    headers = {"User-Agent": "MyBot/1.0"}
     resp = requests.get(url, headers=headers, timeout=10)
     resp.raise_for_status()
+
     data = resp.json()
+
     if not isinstance(data, list) or len(data) == 0:
-        raise ValueError("No data returned from Binance API")
+        raise ValueError("No data returned from Coinbase API")
+
+    data = data[::-1]
+
     df = pd.DataFrame(data)
+
     df["close"] = df[4].astype(float)
+
     return df
 
 def calc_rsi(df, period):
