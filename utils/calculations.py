@@ -2,8 +2,9 @@ import requests
 import pandas as pd
 
 def get_data(symbol='BTCUSDT'):
-    url = f'https://api.binance.com/api/v3/klines?symbol={symbol}&interval=1h&limit=100'
-    resp = requests.get(url, timeout=10)
+    url = f"https://api.exchange.coinbase.com/products/{symbol}/candles?granularity=3600"
+    headers = {"User-Agent": "Python/AiogramBot"}
+    resp = requests.get(url, headers=headers, timeout=10)
     resp.raise_for_status()
     data = resp.json()
     if not isinstance(data, list) or len(data) == 0:
