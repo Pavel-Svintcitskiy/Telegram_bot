@@ -35,4 +35,4 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_API_KEY }}
           RAILWAY_PROJECT: ${{ secrets.RAILWAY_PROJECT_ID }}
         run: |
-          railway up --detach --ci
+          railway up --detach --ci --service Telegram_bot
