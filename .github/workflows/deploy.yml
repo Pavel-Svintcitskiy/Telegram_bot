@@ -4,14 +4,13 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:  # ручной запуск
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     environment:
-      name: production  # environment для деплоя
+      name: production
 
     steps:
       - name: Checkout code
@@ -21,7 +20,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: 'pip'  # кэширование зависимостей
+          cache: 'pip'
 
       - name: Install dependencies
         run: |
@@ -34,6 +33,6 @@ jobs:
       - name: Deploy to Railway
         env:
           RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }}
+          RAILWAY_PROJECT: ${{ secrets.RAILWAY_PROJECT_ID }}
         run: |
-          railway link 6e255b46-a664-4509-9785-2bfe2c24d07b
           railway up --detach --ci
