@@ -27,4 +27,5 @@ jobs:
           RAILWAY_API_KEY: ${{ secrets.RAILWAY_API_KEY }}
         run: |
           curl -sL https://railway.app/install.sh | sh
+          railway login --apiKey $RAILWAY_API_KEY
           railway up --project 6e255b46-a664-4509-9785-2bfe2c24d07b
